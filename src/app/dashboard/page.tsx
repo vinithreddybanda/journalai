@@ -82,6 +82,7 @@ export default function DashboardPage() {
 
       setEntries(formattedEntries);
     } catch (error) {
+      
       console.error('Error loading entries:', error);
     } finally {
       setIsLoading(false);
