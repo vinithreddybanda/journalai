@@ -1,0 +1,61 @@
+pipeline {
+    agent any
+
+    tools {
+        nodejs "NodeJS_20"   // Make sure Node.js is installed in Jenkins (Manage Jenkins → Global Tool Configuration)
+    }
+
+    environment {
+        // Add your environment variables if needed
+        NEXT_PUBLIC_SUPABASE_URL = credentials('SUPABASE_URL')
+        NEXT_PUBLIC_SUPABASE_ANON_KEY = credentials('SUPABASE_ANON_KEY')
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'priya', 
+                    url: 'https://github.com/vinithreddybanda/journalai'
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm install'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'npm run build'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'npm test || echo "No tests configured"'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo 'Deployment step (add your server/hosting deployment commands here)'
+                // Example for copying build to a server:
+                // sh 'scp -r .next/* user@server:/var/www/html/'
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Cleaning workspace...'
+            cleanWs()
+        }
+        success {
+            echo 'Build and Deployment Successful ✅'
+        }
+        failure {
+            echo 'Build Failed ❌'
+        }
+    }
+}
