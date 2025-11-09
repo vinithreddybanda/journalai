@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: journalai-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: journalai
+  template:
+    metadata:
+      labels:
+        app: journalai
+    spec:
+      containers:
+      - name: journalai
+        image: vinithreddybanda/journalai:latest
+        ports:
+        - containerPort: 3000
