@@ -66,7 +66,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Build Docker image
-        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/journalai:latest .
+        run: |
+          docker build \
+            --build-arg NEXT_PUBLIC_SUPABASE_URL=${{ secrets.NEXT_PUBLIC_SUPABASE_URL }} \
+            --build-arg NEXT_PUBLIC_SUPABASE_ANON_KEY=${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }} \
+            --build-arg GROQ_API_KEY=${{ secrets.GROQ_API_KEY }} \
+            -t ${{ secrets.DOCKERHUB_USERNAME }}/journalai:latest .
       - name: Log in to Docker Hub
         run: echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
       - name: Push Docker image
